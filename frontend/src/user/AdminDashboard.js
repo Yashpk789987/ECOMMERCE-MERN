@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import AdminAppBar from "./AdminAppBar";
 import { isAuthenticated } from "../auth";
 
-const AdminDashboard = ({ children }) => {
+const AdminDashboard = ({ children, props }) => {
   const classes = useStyles();
   const {
     user: { _id, name, email, role },
@@ -77,7 +77,7 @@ const AdminDashboard = ({ children }) => {
               style={{ textDecoration: "none", color: "inherit" }}
               to="/create/product"
             >
-              <ListItemText primary={"Create Product"} />
+              <ListItemText primary={" Create Product"} />
             </Link>
           </ListItem>
           <Divider />
@@ -89,6 +89,7 @@ const AdminDashboard = ({ children }) => {
             }}
           >
             <BorderColor />
+
             <Link
               style={{ textDecoration: "none", color: "inherit" }}
               to="/admin/orders"

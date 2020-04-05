@@ -9,6 +9,9 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { withRouter } from "react-router-dom";
+
+import { signout } from "../auth";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,7 +31,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AdminAppBar = ({ children }) => {
+const AdminAppBar = (props) => {
+  const { children } = props;
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -83,8 +87,23 @@ const AdminAppBar = ({ children }) => {
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
+              <MenuItem
+                onClick={() => {
+                  props.history.push("/admin/dashboard");
+                  handleClose();
+                }}
+              >
+                Profile
+              </MenuItem>
+              <MenuItem
+                onClick={() =>
+                  signout(() => {
+                    props.history.push("/");
+                  })
+                }
+              >
+                Logout
+              </MenuItem>
             </Menu>
           </div>
         </Toolbar>
@@ -94,4 +113,4 @@ const AdminAppBar = ({ children }) => {
   );
 };
 
-export default AdminAppBar;
+export default withRouter(AdminAppBar);
