@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+
 import Layout from "../core/Layout";
+import FormLeftContainer from "../core/FormLeftContainer";
 import { signup } from "../auth";
 
 const Signup = () => {
@@ -16,6 +24,14 @@ const Signup = () => {
 
   const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
+  };
+
+  const handleClose = () => {
+    setValues({ ...values, error: false });
+  };
+
+  const handleCloseSuccess = () => {
+    setValues({ ...values, success: false });
   };
 
   const clickSubmit = (event) => {
@@ -38,66 +54,83 @@ const Signup = () => {
   };
 
   const signUpForm = () => (
-    <form>
-      <div className="form-group">
-        <label className="text-muted">Name</label>
-        <input
-          onChange={handleChange("name")}
-          type="text"
-          className="form-control"
-          value={name}
-        />
-      </div>
+    <Paper
+      elevation={3}
+      style={{ marginTop: "6%", marginRight: "20%", marginLeft: "20%" }}
+    >
+      <Grid container>
+        <Grid item xs>
+          <FormLeftContainer />
+        </Grid>
+        <Grid item xs style={{ padding: "5%" }}>
+          <form>
+            <TextField
+              variant="outlined"
+              style={{ width: "100%", marginBottom: "5%" }}
+              onChange={handleChange("name")}
+              label="Name"
+              value={name}
+            />
 
-      <div className="form-group">
-        <label className="text-muted">Email</label>
-        <input
-          onChange={handleChange("email")}
-          type="email"
-          className="form-control"
-          value={email}
-        />
-      </div>
+            <TextField
+              variant="outlined"
+              style={{ width: "100%", marginBottom: "5%", marginTop: "5%" }}
+              value={email}
+              onChange={handleChange("email")}
+              type="email"
+              label="Email"
+            />
 
-      <div className="form-group">
-        <label className="text-muted">Password</label>
-        <input
-          onChange={handleChange("password")}
-          type="password"
-          className="form-control"
-          value={password}
-        />
-      </div>
-      <button onClick={clickSubmit} className="btn btn-primary">
-        Submit
-      </button>
-    </form>
+            <TextField
+              variant="outlined"
+              style={{ width: "100%", marginBottom: "5%", marginTop: "5%" }}
+              value={password}
+              onChange={handleChange("password")}
+              type="password"
+              label="Password"
+            />
+
+            <Button
+              style={{ marginTop: "5%", width: "100%" }}
+              onClick={clickSubmit}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Submit
+            </Button>
+          </form>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 
   const showError = () => (
-    <div
-      className="alert alert-danger"
-      style={{ display: error ? "" : "none" }}
-    >
-      {error}
-    </div>
+    <Snackbar open={error} autoHideDuration={5000} onClose={handleClose}>
+      <MuiAlert onClose={handleClose} variant="filled" severity="error">
+        {error}
+      </MuiAlert>
+    </Snackbar>
   );
 
   const showSuccess = () => (
-    <div
-      className="alert alert-info"
-      style={{ display: success ? "" : "none" }}
-    >
-      New account is created. Please <Link to="/signin">Signin</Link>
-    </div>
+    <Snackbar open={success} autoHideDuration={10000} onClose={handleClose}>
+      <MuiAlert
+        onClose={handleCloseSuccess}
+        variant="filled"
+        severity="success"
+      >
+        {"New account is created.       "}
+        {`Please`}
+        <Link to="/signin">
+          <u style={{ color: "white" }}>Signin</u>
+        </Link>
+      </MuiAlert>
+    </Snackbar>
   );
 
   return (
-    <Layout
-      title="Signup"
-      description="Signup to Node React E-commerce App"
-      className="container col-md-8 offset-md-2"
-    >
+    <Layout>
       {showSuccess()}
       {showError()}
       {signUpForm()}
