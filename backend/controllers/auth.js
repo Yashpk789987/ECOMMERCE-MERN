@@ -5,12 +5,10 @@ const { errorHandler } = require("../helpers/dbErrorHandler");
 
 // using promise
 exports.signup = (req, res) => {
-  // console.log("req.body", req.body);
   const user = new User(req.body);
   user.save((err, user) => {
     if (err) {
       return res.status(400).json({
-        // error: errorHandler(err)
         error: "Email is taken",
       });
     }
@@ -73,8 +71,3 @@ exports.isAdmin = (req, res, next) => {
   }
   next();
 };
-
-/**
- * google login full
- * https://www.udemy.com/instructor/communication/qa/7520556/detail/
- */
