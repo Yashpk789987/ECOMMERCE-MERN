@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import LinearProgress from "@material-ui/core/LinearProgress";
+
 import Layout from "../core/Layout";
+import FormLeftContainer from "../core/FormLeftContainer";
 import { signin, authenticate, isAuthenticated } from "../auth";
 
 const Signin = () => {
   const [values, setValues] = useState({
-    email: "ryan@gmail.com",
-    password: "rrrrrr9",
+    email: "",
+    password: "",
     error: "",
     loading: false,
     redirectToReferrer: false,
@@ -36,47 +45,67 @@ const Signin = () => {
     });
   };
 
-  const signUpForm = () => (
-    <form>
-      <div className="form-group">
-        <label className="text-muted">Email</label>
-        <input
-          onChange={handleChange("email")}
-          type="email"
-          className="form-control"
-          value={email}
-        />
-      </div>
+  const handleClose = () => {
+    setValues({ ...values, error: false });
+  };
 
-      <div className="form-group">
-        <label className="text-muted">Password</label>
-        <input
-          onChange={handleChange("password")}
-          type="password"
-          className="form-control"
-          value={password}
-        />
-      </div>
-      <button onClick={clickSubmit} className="btn btn-primary">
-        Submit
-      </button>
-    </form>
+  const signUpForm = () => (
+    <Paper
+      elevation={3}
+      style={{ marginTop: "6%", marginRight: "20%", marginLeft: "20%" }}
+    >
+      {loading && showLoading()}
+      <Grid container>
+        <Grid item xs>
+          <FormLeftContainer />
+        </Grid>
+        <Grid item xs style={{ padding: "5%" }}>
+          <form>
+            <TextField
+              variant="outlined"
+              style={{ width: "100%", marginBottom: "5%", marginTop: "5%" }}
+              value={email}
+              onChange={handleChange("email")}
+              type="email"
+              label="Email"
+            />
+
+            <TextField
+              variant="outlined"
+              style={{ width: "100%", marginBottom: "5%", marginTop: "5%" }}
+              value={password}
+              onChange={handleChange("password")}
+              type="password"
+              label="Password"
+            />
+
+            <Button
+              style={{ marginTop: "5%", width: "100%" }}
+              onClick={clickSubmit}
+              variant="contained"
+              color="primary"
+              size="large"
+              disabled={loading}
+            >
+              Login
+            </Button>
+          </form>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 
   const showError = () => (
-    <div
-      className="alert alert-danger"
-      style={{ display: error ? "" : "none" }}
-    >
-      {error}
-    </div>
+    <Snackbar open={error} autoHideDuration={5000} onClose={handleClose}>
+      <MuiAlert onClose={handleClose} variant="filled" severity="error">
+        {error}
+      </MuiAlert>
+    </Snackbar>
   );
 
   const showLoading = () =>
-    loading && (
-      <div className="alert alert-info">
-        <h2>Loading...</h2>
-      </div>
+    true && (
+      <LinearProgress variant="query" style={{ backgroundColor: "orange" }} />
     );
 
   const redirectUser = () => {
@@ -93,12 +122,7 @@ const Signin = () => {
   };
 
   return (
-    <Layout
-      title="Signin"
-      description="Signin to Node React E-commerce App"
-      className="container col-md-8 offset-md-2"
-    >
-      {showLoading()}
+    <Layout>
       {showError()}
       {signUpForm()}
       {redirectUser()}
