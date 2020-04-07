@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import Snackbar from "@material-ui/core/Snackbar";
 import MuiAlert from "@material-ui/lab/Alert";
 import Paper from "@material-ui/core/Paper";
@@ -10,12 +11,27 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import FormControl from "@material-ui/core/FormControl";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { makeStyles } from "@material-ui/core/styles";
+
+import { DropzoneArea } from "material-ui-dropzone";
 
 import AdminDashboard from "../user/AdminDashboard";
 import { isAuthenticated } from "../auth";
 import { createProduct, getCategories } from "./apiAdmin";
 
+const useStyles = makeStyles((theme) => ({
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: "#fff",
+  },
+}));
+
 const AddProduct = () => {
+  const classes = useStyles();
   const [values, setValues] = useState({
     name: "",
     description: "",
@@ -41,6 +57,7 @@ const AddProduct = () => {
     category,
     shipping,
     quantity,
+    photo,
     loading,
     error,
     createdProduct,
@@ -73,6 +90,12 @@ const AddProduct = () => {
     setValues({ ...values, [name]: value });
   };
 
+  const handleImage = (name) => (file) => {
+    const value = file[0];
+    formData.set(name, value);
+    setValues({ ...values, [name]: value });
+  };
+
   const clickSubmit = (event) => {
     event.preventDefault();
     setValues({ ...values, error: "", loading: true });
@@ -96,6 +119,7 @@ const AddProduct = () => {
   };
 
   const newProductForm = () => {
+    console.log(values);
     return (
       <Paper style={{ marginLeft: "-25%", width: "150%" }} elevation={3}>
         <Grid container>
@@ -134,7 +158,7 @@ const AddProduct = () => {
                 onChange={handleChange("category")}
                 label="Category"
               >
-                <MenuItem>Select Category</MenuItem>
+                <MenuItem disabled={true}>Select Category</MenuItem>
                 {categories &&
                   categories.map((c, i) => (
                     <MenuItem key={i} value={c._id}>
@@ -157,7 +181,7 @@ const AddProduct = () => {
                 onChange={handleChange("shipping")}
                 label="Category"
               >
-                <MenuItem>Select Category</MenuItem>
+                <MenuItem disabled={true}>Shipping</MenuItem>
 
                 <MenuItem value="0">No</MenuItem>
                 <MenuItem value="1">Yes</MenuItem>
@@ -177,19 +201,56 @@ const AddProduct = () => {
             xs
             style={{ padding: "3%", paddingTop: "1%", paddingBottom: "1%" }}
           >
-            <TextField
-              style={{ width: "100%", marginBottom: "5%", marginTop: "5%" }}
-              id="outlined-textarea"
-              label="Photo"
-              onChange={handleChange("photo")}
-              type="file"
-              name="photo"
-              accept="image/*"
-              variant="outlined"
-            />
+            {photo === "" ? (
+              <div
+                style={{
+                  width: "100%",
+                  marginBottom: "5%",
+                  marginTop: "5%",
+                }}
+              >
+                <DropzoneArea
+                  getFileRemovedMessage={(fileName) => {
+                    setValues({ ...values, photo: "" });
+                    return `File ${fileName} removed.`;
+                  }}
+                  filesLimit={1}
+                  acceptedFiles={["image/*"]}
+                  onChange={handleImage("photo")}
+                />
+              </div>
+            ) : (
+              <div style={{ position: "relative" }}>
+                <IconButton
+                  onClick={() => setValues({ ...values, photo: "" })}
+                  aria-label="delete"
+                  style={{
+                    background: "red",
+                    color: "white",
+                    position: "absolute",
+                    top: "-1%",
+                    right: "-5%",
+                    zIndex: 5,
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+                <img
+                  style={{
+                    width: "100%",
+                    height: 250,
+                    marginBottom: "5%",
+                    marginTop: "5%",
+                    opacity: 1,
+                  }}
+                  src={URL.createObjectURL(photo)}
+                  alt={"Product Image"}
+                />
+              </div>
+            )}
 
             <TextField
-              style={{ width: "100%", marginBottom: "5%", marginTop: "5%" }}
+              style={{ width: "100%", marginBottom: "1%", marginTop: "1%" }}
               id="outlined-textarea"
               label="Description"
               placeholder="Description"
@@ -216,89 +277,14 @@ const AddProduct = () => {
     );
   };
 
-  const newPostForm = () => (
-    <form className="mb-3" onSubmit={clickSubmit}>
-      <h4>Post Photo</h4>
-      <div className="form-group">
-        <label className="btn btn-secondary">
-          <input
-            onChange={handleChange("photo")}
-            type="file"
-            name="photo"
-            accept="image/*"
-          />
-        </label>
-      </div>
-
-      <div className="form-group">
-        <label className="text-muted">Name</label>
-        <input
-          onChange={handleChange("name")}
-          type="text"
-          className="form-control"
-          value={name}
-        />
-      </div>
-
-      <div className="form-group">
-        <label className="text-muted">Description</label>
-        <textarea
-          onChange={handleChange("description")}
-          className="form-control"
-          value={description}
-        />
-      </div>
-
-      <div className="form-group">
-        <label className="text-muted">Price</label>
-        <input
-          onChange={handleChange("price")}
-          type="number"
-          className="form-control"
-          value={price}
-        />
-      </div>
-
-      <div className="form-group">
-        <label className="text-muted">Category</label>
-        <select onChange={handleChange("category")} className="form-control">
-          <option>Please select</option>
-          {categories &&
-            categories.map((c, i) => (
-              <option key={i} value={c._id}>
-                {c.name}
-              </option>
-            ))}
-        </select>
-      </div>
-
-      <div className="form-group">
-        <label className="text-muted">Shipping</label>
-        <select onChange={handleChange("shipping")} className="form-control">
-          <option>Please select</option>
-          <option value="0">No</option>
-          <option value="1">Yes</option>
-        </select>
-      </div>
-
-      <div className="form-group">
-        <label className="text-muted">Quantity</label>
-        <input
-          onChange={handleChange("quantity")}
-          type="number"
-          className="form-control"
-          value={quantity}
-        />
-      </div>
-
-      <button className="btn btn-outline-primary">Create Product</button>
-    </form>
-  );
-
   const showError = () => {
     if (error !== "") {
       return (
         <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
           open={true}
           autoHideDuration={5000}
           onClose={() => setValues({ ...values, error: "" })}
@@ -319,6 +305,10 @@ const AddProduct = () => {
     if (createdProduct) {
       return (
         <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
           open={true}
           autoHideDuration={5000}
           onClose={() => setValues({ ...values, createdProduct: "" })}
@@ -335,12 +325,11 @@ const AddProduct = () => {
     }
   };
 
-  const showLoading = () =>
-    loading && (
-      <div className="alert alert-success">
-        <h2>Loading...</h2>
-      </div>
-    );
+  const showLoading = () => (
+    <Backdrop open={loading} className={classes.backdrop}>
+      <CircularProgress color="inherit" />
+    </Backdrop>
+  );
 
   return (
     <AdminDashboard>
@@ -350,7 +339,6 @@ const AddProduct = () => {
           {showSuccess()}
           {showError()}
           {newProductForm()}
-          {/* {newPostForm()} */}
         </div>
       </div>
     </AdminDashboard>
