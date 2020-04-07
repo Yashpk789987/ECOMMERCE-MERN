@@ -1,7 +1,13 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
 
 import AdminDashboard from "../user/AdminDashboard";
+import FormLeftContainer from "../core/FormLeftContainer";
 import { isAuthenticated } from "../auth";
 import { createCategory } from "./apiAdmin";
 
@@ -27,48 +33,85 @@ const AddCategory = () => {
       if (data.error) {
         setError(data.error);
       } else {
+        setName("");
         setError("");
         setSuccess(true);
       }
     });
   };
 
-  const newCategoryFom = () => (
-    <form onSubmit={clickSubmit}>
-      <div className="form-group">
-        <label className="text-muted">Name</label>
-        <input
-          type="text"
-          className="form-control"
-          onChange={handleChange}
-          value={name}
-          autoFocus
-          required
-        />
-      </div>
-      <button className="btn btn-outline-primary">Create Category</button>
-    </form>
+  const newCategoryForm = () => (
+    <Paper elevation={3} style={{ marginTop: "5%" }}>
+      <Grid container>
+        <Grid item xs>
+          <FormLeftContainer />
+        </Grid>
+        <Grid item xs style={{ padding: "5%" }}>
+          <form>
+            <TextField
+              variant="outlined"
+              style={{ width: "100%", marginBottom: "5%" }}
+              onChange={handleChange}
+              value={name}
+              autoFocus
+              required
+              label="Name"
+            />
+
+            <Button
+              style={{ marginTop: "5%", width: "100%" }}
+              onClick={clickSubmit}
+              variant="contained"
+              color="primary"
+              size="large"
+            >
+              Create Category
+            </Button>
+          </form>
+        </Grid>
+      </Grid>
+    </Paper>
   );
 
   const showSuccess = () => {
     if (success) {
-      return <h3 className="text-success">{name} is created</h3>;
+      return (
+        <Snackbar
+          open={true}
+          autoHideDuration={5000}
+          onClose={() => setSuccess(false)}
+        >
+          <MuiAlert
+            onClose={() => setSuccess(false)}
+            variant="filled"
+            severity="success"
+          >
+            category {name} is created.
+          </MuiAlert>
+        </Snackbar>
+      );
     }
   };
 
   const showError = () => {
     if (error) {
-      return <h3 className="text-danger">Category should be unique</h3>;
+      return (
+        <Snackbar
+          open={true}
+          autoHideDuration={5000}
+          onClose={() => setError(false)}
+        >
+          <MuiAlert
+            onClose={() => setError(false)}
+            variant="filled"
+            severity="error"
+          >
+            category should be unique
+          </MuiAlert>
+        </Snackbar>
+      );
     }
   };
-
-  const goBack = () => (
-    <div className="mt-5">
-      <Link to="/admin/dashboard" className="text-warning">
-        Back to Dashboard
-      </Link>
-    </div>
-  );
 
   return (
     <AdminDashboard>
@@ -76,8 +119,7 @@ const AddCategory = () => {
         <div className="col-md-8 offset-md-2">
           {showSuccess()}
           {showError()}
-          {newCategoryFom()}
-          {goBack()}
+          {newCategoryForm()}
         </div>
       </div>
     </AdminDashboard>
