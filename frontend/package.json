@@ -9,6 +9,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "material-table": "^1.57.2",
     "material-ui-dropzone": "^2.4.9",
     "moment": "^2.24.0",
     "react": "^16.13.1",
