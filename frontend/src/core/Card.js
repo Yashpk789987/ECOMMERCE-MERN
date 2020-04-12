@@ -11,6 +11,9 @@ import CardMedia from "@material-ui/core/CardMedia";
 import CardHeader from "@material-ui/core/CardHeader";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
+import Chip from "@material-ui/core/Chip";
+import CheckIcon from "@material-ui/icons/Check";
+import WarningIcon from "@material-ui/icons/Warning";
 
 import { API } from "../config";
 import { addItem, updateItem, removeItem } from "./cartHelpers";
@@ -80,9 +83,19 @@ const Card = ({
 
   const showStock = (quantity) => {
     return quantity > 0 ? (
-      <span className="badge badge-primary badge-pill">In Stock </span>
+      <Chip
+        size="small"
+        icon={<CheckIcon />}
+        label="In Stock"
+        color="primary"
+      />
     ) : (
-      <span className="badge badge-primary badge-pill">Out of Stock </span>
+      <Chip
+        size="small"
+        icon={<WarningIcon />}
+        label="Out Of Stock"
+        color="secondary"
+      />
     );
   };
 
