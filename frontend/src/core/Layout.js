@@ -149,32 +149,26 @@ export default function Layout(props) {
           )}
         </Tabs>
       </AppBar>
-      <SwipeableViews
-        enableMouseEvents={false}
-        axis={theme.direction === "rtl" ? "x-reverse" : "x"}
-        index={value}
-        onChangeIndex={handleChangeIndex}
-      >
-        <TabPanel value={value} index={tab} dir={theme.direction}>
-          <Home />
+
+      <TabPanel value={value} index={tab} dir={theme.direction}>
+        <Home />
+      </TabPanel>
+      <TabPanel value={value} index={tab + 1} dir={theme.direction}>
+        <Shop />
+      </TabPanel>
+      <TabPanel value={value} index={tab + 2} dir={theme.direction}>
+        Item Three
+      </TabPanel>
+      {!isAuthenticated() && (
+        <TabPanel value={value} index={tab + 3} dir={theme.direction}>
+          <Signin />
         </TabPanel>
-        <TabPanel value={value} index={tab + 1} dir={theme.direction}>
-          <Shop />
+      )}
+      {!isAuthenticated() && (
+        <TabPanel value={value} index={tab + 4} dir={theme.direction}>
+          <Signup />
         </TabPanel>
-        <TabPanel value={value} index={tab + 2} dir={theme.direction}>
-          Item Three
-        </TabPanel>
-        {!isAuthenticated() && (
-          <TabPanel value={value} index={tab + 3} dir={theme.direction}>
-            <Signin />
-          </TabPanel>
-        )}
-        {!isAuthenticated() && (
-          <TabPanel value={value} index={tab + 4} dir={theme.direction}>
-            <Signup />
-          </TabPanel>
-        )}
-      </SwipeableViews>
+      )}
     </div>
   );
 }
