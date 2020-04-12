@@ -115,13 +115,9 @@ const AddCategory = () => {
 
   return (
     <AdminDashboard>
-      <div className="row">
-        <div className="col-md-8 offset-md-2">
-          {showSuccess()}
-          {showError()}
-          {newCategoryForm()}
-        </div>
-      </div>
+      {showSuccess()}
+      {showError()}
+      {newCategoryForm()}
     </AdminDashboard>
   );
 };

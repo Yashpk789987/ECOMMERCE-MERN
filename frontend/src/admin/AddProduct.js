@@ -119,9 +119,8 @@ const AddProduct = () => {
   };
 
   const newProductForm = () => {
-    console.log(values);
     return (
-      <Paper style={{ marginLeft: "-25%", width: "150%" }} elevation={3}>
+      <Paper elevation={3}>
         <Grid container>
           <Grid
             item
@@ -333,14 +332,10 @@ const AddProduct = () => {
 
   return (
     <AdminDashboard>
-      <div className="row">
-        <div className="col-md-8 offset-md-2">
-          {showLoading()}
-          {showSuccess()}
-          {showError()}
-          {newProductForm()}
-        </div>
-      </div>
+      {showLoading()}
+      {showSuccess()}
+      {showError()}
+      {newProductForm()}
     </AdminDashboard>
   );
 };

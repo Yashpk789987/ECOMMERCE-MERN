@@ -23,7 +23,8 @@ mongoose
     useNewUrlParser: true,
     useCreateIndex: true,
   })
-  .then(() => console.log("DB Connected"));
+  .then((msg) => console.log("DB Connected"))
+  .catch((err) => console.log(err));
 
 // middlewares
 app.use(morgan("dev"));

@@ -146,7 +146,7 @@ const UpdateProduct = ({ match, history }) => {
 
   const newProductForm = () => {
     return (
-      <Paper style={{ marginLeft: "-25%", width: "150%" }} elevation={3}>
+      <Paper elevation={3}>
         <Grid container>
           <Grid
             item
@@ -362,14 +362,10 @@ const UpdateProduct = ({ match, history }) => {
 
   return (
     <AdminDashboard>
-      <div className="row">
-        <div className="col-md-8 offset-md-2">
-          {showLoading()}
-          {showSuccess()}
-          {showError()}
-          {newProductForm()}
-        </div>
-      </div>
+      {showLoading()}
+      {showSuccess()}
+      {showError()}
+      {newProductForm()}
     </AdminDashboard>
   );
 };

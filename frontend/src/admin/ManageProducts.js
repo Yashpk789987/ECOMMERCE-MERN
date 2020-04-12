@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
 import MaterialTable from "material-table";
 import Backdrop from "@material-ui/core/Backdrop";
+
 import CircularProgress from "@material-ui/core/CircularProgress";
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -98,15 +98,8 @@ const ManageProducts = ({ history }) => {
 
   return (
     <AdminDashboard>
-      <div className="row">
-        <div className="col-12">
-          <h2 className="text-center">Total {products.length} products</h2>
-          <hr />
-          {showTable()}
-          {showLoading()}
-          <br />
-        </div>
-      </div>
+      {showTable()}
+      {showLoading()}
     </AdminDashboard>
   );
 };
