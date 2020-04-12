@@ -16,6 +16,7 @@ import Menu from "@material-ui/core/Menu";
 import Home from "./Home";
 import Signin from "../user/Signin";
 import Signup from "../user/Signup";
+import Shop from "./Shop";
 
 import { signout, isAuthenticated } from "../auth";
 import { itemTotal } from "./cartHelpers";
@@ -149,7 +150,7 @@ export default function Layout(props) {
         </Tabs>
       </AppBar>
       <SwipeableViews
-        enableMouseEvents={true}
+        enableMouseEvents={false}
         axis={theme.direction === "rtl" ? "x-reverse" : "x"}
         index={value}
         onChangeIndex={handleChangeIndex}
@@ -158,7 +159,7 @@ export default function Layout(props) {
           <Home />
         </TabPanel>
         <TabPanel value={value} index={tab + 1} dir={theme.direction}>
-          Item Two
+          <Shop />
         </TabPanel>
         <TabPanel value={value} index={tab + 2} dir={theme.direction}>
           Item Three
