@@ -122,11 +122,11 @@ const Signin = () => {
   };
 
   return (
-    <Layout>
+    <>
       {showError()}
       {signUpForm()}
       {redirectUser()}
-    </Layout>
+    </>
   );
 };
 
