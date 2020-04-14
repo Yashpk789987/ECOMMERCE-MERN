@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Layout from "./Layout";
 import { getProducts } from "./apiCore";
 import Card from "./Card";
 import Search from "./Search";
+import Grid from "@material-ui/core/Grid";
 
 const Home = () => {
   const [productsBySell, setProductsBySell] = useState([]);
@@ -21,7 +21,6 @@ const Home = () => {
 
   const loadProductsByArrival = () => {
     getProducts("createdAt").then((data) => {
-      console.log(data);
       if (data.error) {
         setError(data.error);
       } else {
@@ -38,23 +37,24 @@ const Home = () => {
   return (
     <>
       <Search />
-      <h2 className="mb-4">New Arrivals</h2>
-      <div className="row">
+      <br />
+      <h2 style={{ paddingLeft: "2%" }}>New Arrivals</h2>
+      <Grid container style={{ padding: "2%" }} spacing={4}>
         {productsByArrival.map((product, i) => (
-          <div key={i} className="col-4 mb-3">
+          <Grid item key={i} style={{ width: 425 }}>
             <Card product={product} />
-          </div>
+          </Grid>
         ))}
-      </div>
-
-      <h2 className="mb-4">Best Sellers</h2>
-      <div className="row">
+      </Grid>
+      <br />
+      <h2 style={{ paddingLeft: "2%" }}>Best Sellers</h2>
+      <Grid container style={{ padding: "2%" }} spacing={4}>
         {productsBySell.map((product, i) => (
-          <div key={i} className="col-4 mb-3">
+          <Grid item key={i} style={{ width: 425 }}>
             <Card product={product} />
-          </div>
+          </Grid>
         ))}
-      </div>
+      </Grid>
     </>
   );
 };
