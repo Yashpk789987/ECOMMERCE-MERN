@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken"); // to generate signed token
 const expressJwt = require("express-jwt"); // for authorization check
 const { errorHandler } = require("../helpers/dbErrorHandler");
 
+console.log("JSWT", process.env.JWT_SECRET);
+
 // using promise
 exports.signup = (req, res) => {
   const user = new User(req.body);
