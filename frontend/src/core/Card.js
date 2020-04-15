@@ -20,7 +20,7 @@ import { addItem, updateItem, removeItem } from "./cartHelpers";
 
 const useStyles = makeStyles({
   card: {
-    maxWidth: 345,
+    maxWidth: 600,
   },
   media: {
     height: 220,
@@ -29,6 +29,7 @@ const useStyles = makeStyles({
 
 const Card = ({
   product,
+  mediaHeight = 220,
   showViewProductButton = true,
   showAddToCartButton = true,
   cartUpdate = false,
@@ -153,6 +154,7 @@ const Card = ({
           />
           <CardMedia
             className={classes.media}
+            style={{ height: mediaHeight }}
             image={`${API}/product/photo/${product._id}`}
             title={product.name}
           />

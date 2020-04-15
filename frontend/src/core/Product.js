@@ -1,58 +1,78 @@
-import React, { useState, useEffect } from 'react';
-import Layout from './Layout';
-import { read, listRelated } from './apiCore';
-import Card from './Card';
+import React, { useState, useEffect } from "react";
+import Grid from "@material-ui/core/Grid";
 
-const Product = props => {
-    const [product, setProduct] = useState({});
-    const [relatedProduct, setRelatedProduct] = useState([]);
-    const [error, setError] = useState(false);
+import { read, listRelated } from "./apiCore";
+import Card from "./Card";
 
-    const loadSingleProduct = productId => {
-        read(productId).then(data => {
-            if (data.error) {
-                setError(data.error);
-            } else {
-                setProduct(data);
-                // fetch related products
-                listRelated(data._id).then(data => {
-                    if (data.error) {
-                        setError(data.error);
-                    } else {
-                        setRelatedProduct(data);
-                    }
-                });
-            }
+const Product = (props) => {
+  const [product, setProduct] = useState({});
+  const [relatedProduct, setRelatedProduct] = useState([]);
+  const [error, setError] = useState(false);
+
+  const loadSingleProduct = (productId) => {
+    read(productId).then((data) => {
+      if (data.error) {
+        setError(data.error);
+      } else {
+        setProduct(data);
+        // fetch related products
+        listRelated(data._id).then((data) => {
+          if (data.error) {
+            setError(data.error);
+          } else {
+            setRelatedProduct(data);
+          }
         });
-    };
+      }
+    });
+  };
 
-    useEffect(() => {
-        const productId = props.match.params.productId;
-        loadSingleProduct(productId);
-    }, [props]);
+  useEffect(() => {
+    const productId = props.match.params.productId;
+    loadSingleProduct(productId);
+  }, [props]);
 
-    return (
-        <Layout
-            title={product && product.name}
-            description={product && product.description && product.description.substring(0, 100)}
-            className="container-fluid"
-        >
-            <div className="row">
-                <div className="col-8">
-                    {product && product.description && <Card product={product} showViewProductButton={false} />}
-                </div>
+  return (
+    <Grid container>
+      <Grid
+        item
+        style={{
+          paddingTop: "1%",
+          paddingLeft: "2%",
+          paddingRight: "2%",
+          width: 500,
+        }}
+      >
+        <h4>Product Description</h4>
+        {product && product.description && (
+          <Card
+            product={product}
+            mediaHeight={400}
+            showViewProductButton={false}
+          />
+        )}
+      </Grid>
 
-                <div className="col-4">
-                    <h4>Related products</h4>
-                    {relatedProduct.map((p, i) => (
-                        <div className="mb-3" key={i}>
-                            <Card product={p} />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </Layout>
-    );
+      <Grid
+        item
+        style={{
+          paddingTop: "1%",
+          width: 800,
+        }}
+      >
+        <h4 style={{ paddingLeft: "3%" }}>Related products</h4>
+        <div style={{ overflowY: "auto", position: "relative", height: 800 }}>
+          <Grid container space={4}>
+            {relatedProduct.map((p, i) => (
+              <Grid item key={i} style={{ padding: "4%", width: 350 }}>
+                <Card product={p} />
+              </Grid>
+            ))}
+          </Grid>
+        </div>
+      </Grid>
+    </Grid>
+  );
 };
 
 export default Product;
