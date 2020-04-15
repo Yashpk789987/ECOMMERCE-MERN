@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -25,6 +26,9 @@ mongoose
   })
   .then((msg) => console.log("DB Connected"))
   .catch((err) => console.log(err));
+
+// Serving React Frontend
+app.use(express.static(path.join(__dirname, "frontend/build")));
 
 // middlewares
 app.use(morgan("dev"));
