@@ -183,7 +183,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     loading && <h2 className="text-danger">Loading...</h2>;
 
   return (
-    <div>
+    <div style={{ positon: "sticky", width: "100%" }}>
       <h2>Total: ${getTotal()}</h2>
       {showLoading(data.loading)}
       {showSuccess(data.success)}

@@ -22,7 +22,7 @@ const Cart = () => {
         <hr />
         <Grid container>
           {items.map((product, i) => (
-            <Grid item style={{ width: 375, padding: "2%" }}>
+            <Grid item style={{ width: 365, padding: "3%" }}>
               <Card
                 key={i}
                 product={product}
@@ -47,16 +47,15 @@ const Cart = () => {
 
   return (
     <Grid container>
-      <div style={{ overflowY: "auto", height: 550 }}>
-        <Grid
-          item
-          style={{
-            paddingTop: "1%",
-          }}
-        >
-          {items.length > 0 ? showItems(items) : noItemsMessage()}
-        </Grid>
-      </div>
+      <Grid
+        item
+        style={{
+          paddingTop: "1%",
+          width: 800,
+        }}
+      >
+        {items.length > 0 ? showItems(items) : noItemsMessage()}
+      </Grid>
 
       <Grid
         item
