@@ -14,9 +14,17 @@ import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
 import CheckIcon from "@material-ui/icons/Check";
 import WarningIcon from "@material-ui/icons/Warning";
+import { SideBySideMagnifier } from "react-image-magnifiers";
 
 import { API } from "../config";
 import { addItem, updateItem, removeItem } from "./cartHelpers";
+
+const zoom = {
+  width: 400,
+  height: 250,
+  zoomWidth: 500,
+  img: "https://wallpapercave.com/wp/k5kfZYR.jpg",
+};
 
 const useStyles = makeStyles({
   card: {
@@ -36,6 +44,7 @@ const Card = ({
   showRemoveProductButton = false,
   setRun = (f) => f,
   run = undefined,
+  children,
   // changeCartSize
 }) => {
   const classes = useStyles();
@@ -143,6 +152,47 @@ const Card = ({
       )
     );
   };
+
+  if (children) {
+    return (
+      <>
+        <>
+          <CardActionArea>
+            {shouldRedirect(redirect)}
+            <CardHeader
+              title={product.name}
+              subheader={moment(product.createdAt).fromNow()}
+            />
+
+            {children}
+            <CardContent>
+              <Typography variant="body2" color="textSecondary" component="p">
+                <p className="card-p  mt-2">
+                  {product.description.substring(0, 100)}
+                </p>
+                <p className="card-p black-10">$ {product.price}</p>
+                <p className="black-9">
+                  Category: {product.category && product.category.name}
+                </p>
+                <p className="black-8">
+                  Added on {moment(product.createdAt).fromNow()}
+                </p>
+              </Typography>
+              {showStock(product.quantity)}
+            </CardContent>
+          </CardActionArea>
+          <CardActions>
+            {showViewButton(showViewProductButton)}
+
+            {showAddToCartBtn(showAddToCartButton)}
+
+            {showRemoveButton(showRemoveProductButton)}
+          </CardActions>
+          {showCartUpdateOptions(cartUpdate)}
+        </>
+      </>
+    );
+  }
   return (
     <>
       <CardMUI className={classes.card}>
@@ -158,6 +208,7 @@ const Card = ({
             image={`${API}/product/photo/${product._id}`}
             title={product.name}
           />
+
           <CardContent>
             <Typography variant="body2" color="textSecondary" component="p">
               <p className="card-p  mt-2">

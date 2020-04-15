@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Grid from "@material-ui/core/Grid";
+import { SideBySideMagnifier } from "react-image-magnifiers";
+
+import Card from "./Card";
 
 import { read, listRelated } from "./apiCore";
-import Card from "./Card";
+
+import { API } from "../config";
 
 const Product = (props) => {
   const [product, setProduct] = useState({});
@@ -45,11 +49,20 @@ const Product = (props) => {
       >
         <h4>Product Description</h4>
         {product && product.description && (
-          <Card
-            product={product}
-            mediaHeight={400}
-            showViewProductButton={false}
-          />
+          <>
+            <Card
+              product={product}
+              mediaHeight={400}
+              showViewProductButton={false}
+            >
+              <SideBySideMagnifier
+                fillAvailableSpace={true}
+                // {`${API}/product/photo/${product._id}`}
+                largeImageSrc={"https://wallpapercave.com/wp/k5kfZYR.jpg"}
+                imageSrc="https://wallpapercave.com/wp/k5kfZYR.jpg"
+              />
+            </Card>
+          </>
         )}
       </Grid>
 
