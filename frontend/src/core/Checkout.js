@@ -1,4 +1,9 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import DropIn from "braintree-web-drop-in-react";
+
+import Card from "./Card";
+
 import {
   getProducts,
   getBraintreeClientToken,
@@ -6,11 +11,8 @@ import {
   createOrder,
 } from "./apiCore";
 import { emptyCart } from "./cartHelpers";
-import Card from "./Card";
+
 import { isAuthenticated } from "../auth";
-import { Link } from "react-router-dom";
-// import "braintree-web"; // not using this package
-// import DropIn from 'braintree-web-drop-in-react';
 
 const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
   const [data, setData] = useState({
@@ -28,7 +30,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
   const getToken = (userId, token) => {
     getBraintreeClientToken(userId, token).then((data) => {
       if (data.error) {
-        console.log(data.error);
+        console.log(data);
         setData({ ...data, error: data.error });
       } else {
         console.log(data);
@@ -38,7 +40,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
   };
 
   useEffect(() => {
-    //getToken(userId, token);
+    getToken(userId, token);
   }, []);
 
   const handleAddress = (event) => {
@@ -51,15 +53,15 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     }, 0);
   };
 
-  //   const showCheckout = () => {
-  //     return isAuthenticated() ? (
-  //       <div>{showDropIn()}</div>
-  //     ) : (
-  //       <Link to="/signin">
-  //         <button className="btn btn-primary">Sign in to checkout</button>
-  //       </Link>
-  //     );
-  //   };
+  const showCheckout = () => {
+    return isAuthenticated() ? (
+      <div>{showDropIn()}</div>
+    ) : (
+      <Link to="/signin">
+        <button className="btn btn-primary">Sign in to checkout</button>
+      </Link>
+    );
+  };
 
   let deliveryAddress = data.address;
 
@@ -125,36 +127,39 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
       });
   };
 
-  // const showDropIn = () => (
-  //     <div onBlur={() => setData({ ...data, error: '' })}>
-  //         {data.clientToken !== null && products.length > 0 ? (
-  //             <div>
-  //                 <div className="gorm-group mb-3">
-  //                     <label className="text-muted">Delivery address:</label>
-  //                     <textarea
-  //                         onChange={handleAddress}
-  //                         className="form-control"
-  //                         value={data.address}
-  //                         placeholder="Type your delivery address here..."
-  //                     />
-  //                 </div>
+  const showDropIn = () => (
+    <div
+      style={{ padding: "5%" }}
+      onBlur={() => setData({ ...data, error: "" })}
+    >
+      {data.clientToken !== null && products.length > 0 ? (
+        <div>
+          <div className="gorm-group mb-3">
+            <label className="text-muted">Delivery address:</label>
+            <textarea
+              onChange={handleAddress}
+              className="form-control"
+              value={data.address}
+              placeholder="Type your delivery address here..."
+            />
+          </div>
 
-  //                 <DropIn
-  //                     options={{
-  //                         authorization: data.clientToken,
-  //                         paypal: {
-  //                             flow: 'vault'
-  //                         }
-  //                     }}
-  //                     onInstance={instance => (data.instance = instance)}
-  //                 />
-  //                 <button onClick={buy} className="btn btn-success btn-block">
-  //                     Pay
-  //                 </button>
-  //             </div>
-  //         ) : null}
-  //     </div>
-  // );
+          <DropIn
+            options={{
+              authorization: data.clientToken,
+              paypal: {
+                flow: "vault",
+              },
+            }}
+            onInstance={(instance) => (data.instance = instance)}
+          />
+          <button onClick={buy} className="btn btn-success btn-block">
+            Pay
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
 
   const showError = (error) => (
     <div
@@ -183,7 +188,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
       {showLoading(data.loading)}
       {showSuccess(data.success)}
       {showError(data.error)}
-      {/* {showCheckout()} */}
+      {showCheckout()}
     </div>
   );
 };

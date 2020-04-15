@@ -14,8 +14,12 @@ import Typography from "@material-ui/core/Typography";
 import Chip from "@material-ui/core/Chip";
 import CheckIcon from "@material-ui/icons/Check";
 import WarningIcon from "@material-ui/icons/Warning";
-import { SideBySideMagnifier } from "react-image-magnifiers";
+import TextField from "@material-ui/core/TextField";
+import RemoveIcon from "@material-ui/icons/Remove";
+import AddCircleOutlineRoundedIcon from "@material-ui/icons/AddCircleOutlineRounded";
+import { IconButton } from "@material-ui/core";
 
+import { SideBySideMagnifier } from "react-image-magnifiers";
 import { API } from "../config";
 import { addItem, updateItem, removeItem } from "./cartHelpers";
 
@@ -51,9 +55,10 @@ const Card = ({
   const [redirect, setRedirect] = useState(false);
   const [count, setCount] = useState(product.count);
 
-  const showViewButton = (showViewProductButton) => {
+  const showViewButton = (showViewProductButton, cartUpdate) => {
     return (
-      showViewProductButton && (
+      showViewProductButton &&
+      !cartUpdate && (
         <Button
           variant="contained"
           color="primary"
@@ -109,11 +114,11 @@ const Card = ({
     );
   };
 
-  const handleChange = (productId) => (event) => {
+  const handleChange = (productId, value) => {
     setRun(!run); // run useEffect in parent Cart
-    setCount(event.target.value < 1 ? 1 : event.target.value);
-    if (event.target.value >= 1) {
-      updateItem(productId, event.target.value);
+    setCount(value < 1 || value > 9 ? 1 : value);
+    if (value >= 1 && value <= 9) {
+      updateItem(productId, value);
     }
   };
 
@@ -121,16 +126,39 @@ const Card = ({
     return (
       cartUpdate && (
         <div>
-          <div className="input-group mb-3">
-            <div className="input-group-prepend">
-              <span className="input-group-text">Adjust Quantity</span>
-            </div>
-            <input
+          <div
+            style={{
+              display: "flex",
+              flex: 1,
+              width: 225,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "center",
+            }}
+          >
+            <IconButton
+              disabled={parseInt(count) === 1}
+              onClick={() => handleChange(product._id, parseInt(count) - 1)}
+            >
+              <RemoveIcon />
+            </IconButton>
+            <TextField
+              style={{ width: 100, WebkitAppearance: "none", margin: 0 }}
+              id="filled-number"
               type="number"
-              className="form-control"
+              InputLabelProps={{
+                shrink: true,
+              }}
               value={count}
-              onChange={handleChange(product._id)}
+              onChange={(e) => handleChange(product._id, e.target.value)}
+              variant="outlined"
             />
+            <IconButton
+              disabled={parseInt(count) === 9}
+              onClick={() => handleChange(product._id, parseInt(count) + 1)}
+            >
+              <AddCircleOutlineRoundedIcon />
+            </IconButton>
           </div>
         </div>
       )
@@ -147,7 +175,7 @@ const Card = ({
             setRun(!run); // run useEffect in parent Cart
           }}
         >
-          Remove Product
+          Remove
         </Button>
       )
     );
@@ -182,13 +210,13 @@ const Card = ({
             </CardContent>
           </CardActionArea>
           <CardActions>
-            {showViewButton(showViewProductButton)}
+            {showCartUpdateOptions(cartUpdate)}
+            {showViewButton(showViewProductButton, cartUpdate)}
 
             {showAddToCartBtn(showAddToCartButton)}
 
             {showRemoveButton(showRemoveProductButton)}
           </CardActions>
-          {showCartUpdateOptions(cartUpdate)}
         </>
       </>
     );
@@ -226,13 +254,14 @@ const Card = ({
           </CardContent>
         </CardActionArea>
         <CardActions>
-          {showViewButton(showViewProductButton)}
+          {showCartUpdateOptions(cartUpdate)}
+
+          {showViewButton(showViewProductButton, cartUpdate)}
 
           {showAddToCartBtn(showAddToCartButton)}
 
           {showRemoveButton(showRemoveProductButton)}
         </CardActions>
-        {showCartUpdateOptions(cartUpdate)}
       </CardMUI>
     </>
   );
