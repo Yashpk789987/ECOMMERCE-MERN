@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import DropIn from "braintree-web-drop-in-react";
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button";
+import Snackbar from "@material-ui/core/Snackbar";
+import MuiAlert from "@material-ui/lab/Alert";
+import Backdrop from "@material-ui/core/Backdrop";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 import Card from "./Card";
 
@@ -69,6 +75,7 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
     setData({ loading: true });
     // send the nonce to your server
     // nonce = data.instance.requestPaymentMethod()
+    console.log(data);
     let nonce;
     let getNonce = data.instance
       .requestPaymentMethod()
@@ -128,19 +135,21 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
   };
 
   const showDropIn = () => (
-    <div
-      style={{ padding: "5%" }}
-      onBlur={() => setData({ ...data, error: "" })}
-    >
+    <div onBlur={() => setData({ ...data, error: "" })}>
       {data.clientToken !== null && products.length > 0 ? (
         <div>
-          <div className="gorm-group mb-3">
-            <label className="text-muted">Delivery address:</label>
-            <textarea
-              onChange={handleAddress}
-              className="form-control"
+          <div>
+            <TextField
+              style={{ width: "100%", marginBottom: "1%", marginTop: "1%" }}
+              id="outlined-textarea"
+              label="Delivery address:"
+              placeholder="Delivery address .."
+              type="text"
+              multiline={true}
+              variant="outlined"
+              rows="4"
               value={data.address}
-              placeholder="Type your delivery address here..."
+              onChange={handleAddress}
             />
           </div>
 
@@ -153,34 +162,75 @@ const Checkout = ({ products, setRun = (f) => f, run = undefined }) => {
             }}
             onInstance={(instance) => (data.instance = instance)}
           />
-          <button onClick={buy} className="btn btn-success btn-block">
+
+          <Button
+            style={{ marginTop: "5%", width: "100%" }}
+            onClick={buy}
+            variant="contained"
+            color="primary"
+            size="large"
+          >
             Pay
-          </button>
+          </Button>
         </div>
       ) : null}
     </div>
   );
 
-  const showError = (error) => (
-    <div
-      className="alert alert-danger"
-      style={{ display: error ? "" : "none" }}
-    >
-      {error}
-    </div>
-  );
+  const showError = (error) => {
+    if (error) {
+      return (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "right",
+          }}
+          open={true}
+          autoHideDuration={5000}
+          onClose={() => setData({ ...data, error: "" })}
+        >
+          <MuiAlert
+            onClose={() => setData({ ...data, error: "" })}
+            variant="filled"
+            severity="error"
+          >
+            {error}
+          </MuiAlert>
+        </Snackbar>
+      );
+    }
+  };
 
-  const showSuccess = (success) => (
-    <div
-      className="alert alert-info"
-      style={{ display: success ? "" : "none" }}
-    >
-      Thanks! Your payment was successful!
-    </div>
-  );
+  const showSuccess = (success) => {
+    if (success) {
+      return (
+        <Snackbar
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          open={true}
+          autoHideDuration={5000}
+          onClose={() => setData({ ...data, success: false })}
+        >
+          <MuiAlert
+            onClose={() => setData({ ...data, success: false })}
+            variant="filled"
+            severity="success"
+          >
+            Thanks! Your payment was successful!
+          </MuiAlert>
+        </Snackbar>
+      );
+    }
+  };
 
   const showLoading = (loading) =>
-    loading && <h2 className="text-danger">Loading...</h2>;
+    loading && (
+      <Backdrop open={loading} style={{ zIndex: 1 }}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+    );
 
   return (
     <div style={{ positon: "sticky", width: "100%" }}>
