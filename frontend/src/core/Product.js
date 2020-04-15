@@ -3,28 +3,38 @@ import Grid from "@material-ui/core/Grid";
 import { SideBySideMagnifier } from "react-image-magnifiers";
 
 import Card from "./Card";
+import CardSkeleton from "./CardSkeleton";
+import SkeletonRow from "./SkeletonRow";
 
 import { read, listRelated } from "./apiCore";
 
 import { API } from "../config";
 
 const Product = (props) => {
+  const [productLoading, setProductLoading] = useState(false);
+  const [relatedProductLoading, setRelatedProductLoading] = useState(false);
   const [product, setProduct] = useState({});
   const [relatedProduct, setRelatedProduct] = useState([]);
   const [error, setError] = useState(false);
 
   const loadSingleProduct = (productId) => {
+    setRelatedProductLoading(true);
+    setProductLoading(true);
     read(productId).then((data) => {
       if (data.error) {
         setError(data.error);
+        setProductLoading(false);
       } else {
         setProduct(data);
+        setProductLoading(false);
         // fetch related products
         listRelated(data._id).then((data) => {
           if (data.error) {
             setError(data.error);
+            setRelatedProductLoading(false);
           } else {
             setRelatedProduct(data);
+            setRelatedProductLoading(false);
           }
         });
       }
@@ -47,7 +57,10 @@ const Product = (props) => {
           width: 500,
         }}
       >
-        <h4>Product Description</h4>
+        <center>
+          <h4>Product Description</h4>
+        </center>
+        {productLoading && <CardSkeleton />}
         {product && product.description && (
           <>
             <Card
@@ -73,11 +86,15 @@ const Product = (props) => {
           width: 800,
         }}
       >
-        <h4 style={{ paddingLeft: "3%" }}>Related products</h4>
-        <div style={{ overflowY: "auto", position: "relative", height: 800 }}>
+        <center>
+          <h4>Related products</h4>
+        </center>
+
+        <div style={{ overflowY: "auto", height: 800 }}>
+          {relatedProductLoading && <SkeletonRow width={350} />}
           <Grid container space={4}>
             {relatedProduct.map((p, i) => (
-              <Grid item key={i} style={{ padding: "4%", width: 350 }}>
+              <Grid item key={i} style={{ padding: "2%", width: 350 }}>
                 <Card product={p} />
               </Grid>
             ))}
