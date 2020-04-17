@@ -38,12 +38,18 @@ app.use(expressValidator());
 app.use(cors());
 
 // routes middleware
+console.log("I changed u8487487487...");
+
 app.use("/api", authRoutes);
 app.use("/api", userRoutes);
 app.use("/api", categoryRoutes);
 app.use("/api", productRoutes);
 app.use("/api", braintreeRoutes);
 app.use("/api", orderRoutes);
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/frontend/build/index.html"));
+});
 
 const port = process.env.PORT || 5000;
 
